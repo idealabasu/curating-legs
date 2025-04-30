@@ -191,6 +191,5 @@ if __name__ == '__main__':
             break
 
     if valid:
-        print(str(list(r.x)))
         obj(r.x, p, plot=True)
         plt.show()
