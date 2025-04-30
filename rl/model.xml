@@ -1,0 +1,348 @@
+<mujoco>
+  <option timestep="0.002" gravity="0 0 gravity_z" integrator="implicitfast">
+    <flag filterparent="disable" />
+  </option>
+
+  <default>
+    <geom solref="0.004 1" density="1820" friction="friction_tan" />
+    <joint solreffriction="0.004 1" />
+    <equality solref="0.004 1" />
+    <!-- Child geoms of a leg do not collide with each other but can collide with geoms from other
+    parents -->
+    <default class="leg_fl">
+      <geom contype="8" conaffinity="7" />
+    </default>
+    <default class="leg_fr">
+      <geom contype="4" conaffinity="11" />
+    </default>
+    <default class="leg_rl">
+      <geom contype="2" conaffinity="13" />
+    </default>
+    <default class="leg_rr">
+      <geom contype="1" conaffinity="14" />
+    </default>
+
+  </default>
+
+  <visual>
+    <quality shadowsize="8192" />
+    <map shadowclip="0.1" />
+  </visual>
+
+  <asset>
+    <material name="white" rgba="1 1 1 1" />
+    <material name="blue" rgba="0 0 1 1" />
+    <material name="green" rgba="0 1 0 1" />
+    <material name="dark_green" rgba="0 1 0 1" />
+    <material name="black" rgba="1 1 1 1" />
+    <texture name="floor" type="2d" builtin="flat" rgb1="0.7 0.7 0.7" width="1" height="1" />
+    <texture name="sky" type="skybox" builtin="flat" rgb1="1 1 1" width="1" height="1" />
+    <material name="floor" texture="floor" texrepeat="hfield_texrepeat hfield_texrepeat" />
+    <hfield name="floor" ncol="hfield_nr" nrow="hfield_nr" size="hfield_r hfield_r 1 0.1" />
+  </asset>
+
+  <worldbody>
+    <geom name="floor" type="hfield" hfield="floor" material="floor" pos="floor_x floor_y floor_z"
+      euler="floor_roll floor_pitch floor_yaw" />
+    <body name="body" pos="body_x body_y body_z" euler="body_roll body_pitch body_yaw">
+      <light mode="track" pos="0 0 3" directional="true" />
+      <site name="body" />
+      <joint name="body" type="free" />
+      <geom name="top_plate" type="box" pos="0 0 0.01285" size="0.06525 0.015 0.00085" mass="0.012"
+        material="black" />
+      <geom name="hip_servo_fl" type="box" pos="0.0575 0.0115 0" size="0.017 0.0115 0.01"
+        mass="0.029" material="green" />
+      <geom name="hip_servo_fr" type="box" pos="0.0575 -0.0115 0" size="0.017 0.0115 0.01"
+        mass="0.029" material="green" />
+      <geom name="mcu" type="box" pos="0 0 0.0216" size="0.03455 0.0147 0.0079" mass="0.0425"
+        material="blue" />
+      <geom name="battery" type="box" pos="0 0 0" size="0.0225 0.0115 0.011" mass="0.0427"
+        material="blue" />
+      <geom name="hip_servo_rl" type="box" pos="-0.0575 0.0115 0" size="0.017 0.0115 0.01"
+        mass="0.029" material="dark_green" />
+      <geom name="hip_servo_rr" type="box" pos="-0.0575 -0.0115 0" size="0.017 0.0115 0.01"
+        mass="0.029" material="dark_green" />
+      <geom name="bottom_plate" type="box" pos="0 0 -0.01285" size="0.06525 0.015 0.00085"
+        mass="0.012" material="black" />
+
+      <body name="leg_fl" childclass="leg_fl" pos="0.065 0.0425 0" euler="0 0 180">
+        <joint name="hip_fl" type="hinge" axis="0 1 0" armature="servo_I" damping="servo_b"
+          frictionloss="servo_f" />
+        <geom name="femur_fl" type="box" pos="femur_x femur_y femur_z" euler="0 femur_pitch 0"
+          size="femur_l femur_w femur_h" material="black" />
+        <geom name="femur_hip_fl" type="cylinder" pos="0 femur_y 0" euler="90 0 0"
+          size="0.008 0.00085" material="black" />
+        <geom name="femur_knee_fl" type="cylinder" pos="knee_x femur_y knee_z" euler="90 0 0"
+          size="0.02 0.00085" material="black" />
+        <geom name="knee_servo_fl" type="box" pos="knee_servo_x knee_servo_y knee_servo_z"
+          euler="0 knee_servo_pitch 0" size="knee_servo_l knee_servo_w knee_servo_h" mass="0.0345"
+          material="green" />
+        <geom name="ground_fl" type="box" pos="ground_x 0 ground_z" euler="0 ground_pitch 0"
+          size="ground_l ground_w ground_h" material="black" contype="0" conaffinity="0" />
+
+        <body name="input_fl">
+          <joint name="knee_fl" type="hinge" axis="0 -1 0" pos="knee_x 0 knee_z"
+            armature="servo_I" damping="servo_b" frictionloss="servo_f" />
+          <geom name="input_fl" type="box" pos="input_x -input_y input_z" euler="0 input_pitch 0"
+            size="input_l input_w input_h" material="black" />
+          <body name="crank_fl">
+            <joint name="crank_fl" type="hinge" axis="0 1 0" pos="knee_x 0 knee_z"
+              stiffness="ss_k" damping="ss_b" />
+            <geom name="crank_fl" type="box" pos="crank_x 0 crank_z" euler="0 crank_pitch 0"
+              size="crank_l crank_w crank_h" material="black" />
+            <geom name="ss_fl" type="box" pos="ss_x -ss_y ss_z" euler="0 ss_pitch 0"
+              size="ss_l ss_w ss_h" material="black" />
+          </body>
+        </body>
+
+        <body name="rocker_fl">
+          <joint name="rocker_fl" type="hinge" axis="0 1 0" pos="rocker_joint_x 0 rocker_joint_z" />
+          <geom name="rocker_fl" type="box" pos="rocker_x 0 rocker_z"
+            euler="0 rocker_pitch 0" size="rocker_l rocker_w rocker_h" material="black" />
+          <body name="coupler_fl">
+            <joint name="coupler_fl" type="hinge" axis="0 1 0"
+              pos="coupler_joint_x 0 coupler_joint_z" />
+            <geom name="coupler_fl" type="box" pos="coupler_x 0 coupler_z" euler="0 coupler_pitch 0"
+              size="coupler_l coupler_w coupler_h" material="black" />
+          </body>
+        </body>
+
+        <body name="ps_fl">
+          <joint name="ps_fl" type="hinge" axis="0 1 0" pos="ps_joint_x 0 ps_joint_z"
+            stiffness="ps_k" damping="ps_b" />
+          <geom name="ps_fl" type="box" pos="ps_x -ps_y ps_z" euler="0 ps_pitch 0"
+            size="ps_l ps_w ps_h" material="black" />
+          <body name="ps_coupler_fl">
+            <joint name="ps_coupler_fl" type="hinge" axis="0 1 0"
+              pos="ps_coupler_joint_x 0 ps_coupler_joint_z" />
+            <geom name="ps_coupler_fl" type="box" pos="ps_coupler_x -ps_coupler_y ps_coupler_z"
+              euler="0 ps_coupler_pitch 0" size="ps_coupler_l ps_coupler_w ps_coupler_h"
+              material="black" contype="0" conaffinity="0" />
+          </body>
+        </body>
+      </body>
+
+      <body name="leg_fr" childclass="leg_fr" pos="0.065 -0.0425 0" euler="0 0 180">
+        <joint name="hip_fr" type="hinge" axis="0 1 0" armature="servo_I" damping="servo_b"
+          frictionloss="servo_f" />
+        <geom name="femur_fr" type="box" pos="femur_x -femur_y femur_z" euler="0 femur_pitch 0"
+          size="femur_l femur_w femur_h" material="black" />
+        <geom name="femur_hip_fr" type="cylinder" pos="0 -femur_y 0" euler="90 0 0"
+          size="0.008 0.00085" material="black" />
+        <geom name="femur_knee_fr" type="cylinder" pos="knee_x -femur_y knee_z" euler="90 0 0"
+          size="0.02 0.00085" material="black" />
+        <geom name="knee_servo_fr" type="box" pos="knee_servo_x -knee_servo_y knee_servo_z"
+          euler="0 knee_servo_pitch 0" size="knee_servo_l knee_servo_w knee_servo_h" mass="0.0345"
+          material="green" />
+        <geom name="ground_fr" type="box" pos="ground_x 0 ground_z" euler="0 ground_pitch 0"
+          size="ground_l ground_w ground_h" material="black" contype="0" conaffinity="0" />
+
+        <body name="input_fr">
+          <joint name="knee_fr" type="hinge" axis="0 -1 0" pos="knee_x 0 knee_z"
+            armature="servo_I" damping="servo_b" frictionloss="servo_f" />
+          <geom name="input_fr" type="box" pos="input_x input_y input_z" euler="0 input_pitch 0"
+            size="input_l input_w input_h" material="black" />
+          <body name="crank_fr">
+            <joint name="crank_fr" type="hinge" axis="0 1 0" pos="knee_x 0 knee_z"
+              stiffness="ss_k" damping="ss_b" />
+            <geom name="crank_fr" type="box" pos="crank_x 0 crank_z" euler="0 crank_pitch 0"
+              size="crank_l crank_w crank_h" material="black" />
+            <geom name="ss_fr" type="box" pos="ss_x ss_y ss_z" euler="0 ss_pitch 0"
+              size="ss_l ss_w ss_h" material="black" />
+          </body>
+        </body>
+
+        <body name="rocker_fr">
+          <joint name="rocker_fr" type="hinge" axis="0 1 0" pos="rocker_joint_x 0 rocker_joint_z" />
+          <geom name="rocker_fr" type="box" pos="rocker_x 0 rocker_z"
+            euler="0 rocker_pitch 0" size="rocker_l rocker_w rocker_h" material="black" />
+          <body name="coupler_fr">
+            <joint name="coupler_fr" type="hinge" axis="0 1 0"
+              pos="coupler_joint_x 0 coupler_joint_z" />
+            <geom name="coupler_fr" type="box" pos="coupler_x 0 coupler_z" euler="0 coupler_pitch 0"
+              size="coupler_l coupler_w coupler_h" material="black" />
+          </body>
+        </body>
+
+        <body name="ps_fr">
+          <joint name="ps_fr" type="hinge" axis="0 1 0" pos="ps_joint_x 0 ps_joint_z"
+            stiffness="ps_k" damping="ps_b" />
+          <geom name="ps_fr" type="box" pos="ps_x ps_y ps_z" euler="0 ps_pitch 0"
+            size="ps_l ps_w ps_h" material="black" />
+          <body name="ps_coupler_fr">
+            <joint name="ps_coupler_fr" type="hinge" axis="0 1 0"
+              pos="ps_coupler_joint_x 0 ps_coupler_joint_z" />
+            <geom name="ps_coupler_fr" type="box" pos="ps_coupler_x ps_coupler_y ps_coupler_z"
+              euler="0 ps_coupler_pitch 0" size="ps_coupler_l ps_coupler_w ps_coupler_h"
+              material="black" contype="0" conaffinity="0" />
+          </body>
+        </body>
+      </body>
+
+      <body name="leg_rl" childclass="leg_rl" pos="-0.065 0.0425 0">
+        <joint name="hip_rl" type="hinge" axis="0 -1 0" armature="servo_I" damping="servo_b"
+          frictionloss="servo_f" />
+        <geom name="femur_rl" type="box" pos="femur_x -femur_y femur_z" euler="0 femur_pitch 0"
+          size="femur_l femur_w femur_h" material="black" />
+        <geom name="femur_hip_rl" type="cylinder" pos="0 -femur_y 0" euler="90 0 0"
+          size="0.008 0.00085" material="black" />
+        <geom name="femur_knee_rl" type="cylinder" pos="knee_x -femur_y knee_z" euler="90 0 0"
+          size="0.02 0.00085" material="black" />
+        <geom name="knee_servo_rl" type="box" pos="knee_servo_x -knee_servo_y knee_servo_z"
+          euler="0 knee_servo_pitch 0" size="knee_servo_l knee_servo_w knee_servo_h" mass="0.0345"
+          material="dark_green" />
+        <geom name="ground_rl" type="box" pos="ground_x 0 ground_z" euler="0 ground_pitch 0"
+          size="ground_l ground_w ground_h" material="black" contype="0" conaffinity="0" />
+
+        <body name="input_rl">
+          <joint name="knee_rl" type="hinge" axis="0 -1 0" pos="knee_x 0 knee_z"
+            armature="servo_I" damping="servo_b" frictionloss="servo_f" />
+          <geom name="input_rl" type="box" pos="input_x input_y input_z" euler="0 input_pitch 0"
+            size="input_l input_w input_h" material="black" />
+          <body name="crank_rl">
+            <joint name="crank_rl" type="hinge" axis="0 1 0" pos="knee_x 0 knee_z"
+              stiffness="ss_k" damping="ss_b" />
+            <geom name="crank_rl" type="box" pos="crank_x 0 crank_z" euler="0 crank_pitch 0"
+              size="crank_l crank_w crank_h" material="black" />
+            <geom name="ss_rl" type="box" pos="ss_x ss_y ss_z" euler="0 ss_pitch 0"
+              size="ss_l ss_w ss_h" material="black" />
+          </body>
+        </body>
+
+        <body name="rocker_rl">
+          <joint name="rocker_rl" type="hinge" axis="0 1 0" pos="rocker_joint_x 0 rocker_joint_z" />
+          <geom name="rocker_rl" type="box" pos="rocker_x 0 rocker_z"
+            euler="0 rocker_pitch 0" size="rocker_l rocker_w rocker_h" material="black" />
+          <body name="coupler_rl">
+            <joint name="coupler_rl" type="hinge" axis="0 1 0"
+              pos="coupler_joint_x 0 coupler_joint_z" />
+            <geom name="coupler_rl" type="box" pos="coupler_x 0 coupler_z" euler="0 coupler_pitch 0"
+              size="coupler_l coupler_w coupler_h" material="black" />
+          </body>
+        </body>
+
+        <body name="ps_rl">
+          <joint name="ps_rl" type="hinge" axis="0 1 0" pos="ps_joint_x 0 ps_joint_z"
+            stiffness="ps_k" damping="ps_b" />
+          <geom name="ps_rl" type="box" pos="ps_x ps_y ps_z" euler="0 ps_pitch 0"
+            size="ps_l ps_w ps_h" material="black" />
+          <body name="ps_coupler_rl">
+            <joint name="ps_coupler_rl" type="hinge" axis="0 1 0"
+              pos="ps_coupler_joint_x 0 ps_coupler_joint_z" />
+            <geom name="ps_coupler_rl" type="box" pos="ps_coupler_x ps_coupler_y ps_coupler_z"
+              euler="0 ps_coupler_pitch 0" size="ps_coupler_l ps_coupler_w ps_coupler_h"
+              material="black" contype="0" conaffinity="0" />
+          </body>
+        </body>
+      </body>
+
+      <body name="leg_rr" childclass="leg_rr" pos="-0.065 -0.0425 0">
+        <joint name="hip_rr" type="hinge" axis="0 -1 0" armature="servo_I" damping="servo_b"
+          frictionloss="servo_f" />
+        <geom name="femur_rr" type="box" pos="femur_x femur_y femur_z" euler="0 femur_pitch 0"
+          size="femur_l femur_w femur_h" material="black" />
+        <geom name="femur_hip_rr" type="cylinder" pos="0 femur_y 0" euler="90 0 0"
+          size="0.008 0.00085" material="black" />
+        <geom name="femur_knee_rr" type="cylinder" pos="knee_x femur_y knee_z" euler="90 0 0"
+          size="0.02 0.00085" material="black" />
+        <geom name="knee_servo_rr" type="box" pos="knee_servo_x knee_servo_y knee_servo_z"
+          euler="0 knee_servo_pitch 0" size="knee_servo_l knee_servo_w knee_servo_h" mass="0.0345"
+          material="dark_green" />
+        <geom name="ground_rr" type="box" pos="ground_x 0 ground_z" euler="0 ground_pitch 0"
+          size="ground_l ground_w ground_h" material="black" contype="0" conaffinity="0" />
+
+        <body name="input_rr">
+          <joint name="knee_rr" type="hinge" axis="0 -1 0" pos="knee_x 0 knee_z"
+            armature="servo_I" damping="servo_b" frictionloss="servo_f" />
+          <geom name="input_rr" type="box" pos="input_x -input_y input_z" euler="0 input_pitch 0"
+            size="input_l input_w input_h" material="black" />
+          <body name="crank_rr">
+            <joint name="crank_rr" type="hinge" axis="0 1 0" pos="knee_x 0 knee_z"
+              stiffness="ss_k" damping="ss_b" />
+            <geom name="crank_rr" type="box" pos="crank_x 0 crank_z" euler="0 crank_pitch 0"
+              size="crank_l crank_w crank_h" material="black" />
+            <geom name="ss_rr" type="box" pos="ss_x -ss_y ss_z" euler="0 ss_pitch 0"
+              size="ss_l ss_w ss_h" material="black" />
+          </body>
+        </body>
+
+        <body name="rocker_rr">
+          <joint name="rocker_rr" type="hinge" axis="0 1 0" pos="rocker_joint_x 0 rocker_joint_z" />
+          <geom name="rocker_rr" type="box" pos="rocker_x 0 rocker_z"
+            euler="0 rocker_pitch 0" size="rocker_l rocker_w rocker_h" material="black" />
+          <body name="coupler_rr">
+            <joint name="coupler_rr" type="hinge" axis="0 1 0"
+              pos="coupler_joint_x 0 coupler_joint_z" />
+            <geom name="coupler_rr" type="box" pos="coupler_x 0 coupler_z" euler="0 coupler_pitch 0"
+              size="coupler_l coupler_w coupler_h" material="black" />
+          </body>
+        </body>
+
+        <body name="ps_rr">
+          <joint name="ps_rr" type="hinge" axis="0 1 0" pos="ps_joint_x 0 ps_joint_z"
+            stiffness="ps_k" damping="ps_b" />
+          <geom name="ps_rr" type="box" pos="ps_x -ps_y ps_z" euler="0 ps_pitch 0"
+            size="ps_l ps_w ps_h" material="black" />
+          <body name="ps_coupler_rr">
+            <joint name="ps_coupler_rr" type="hinge" axis="0 1 0"
+              pos="ps_coupler_joint_x 0 ps_coupler_joint_z" />
+            <geom name="ps_coupler_rr" type="box" pos="ps_coupler_x -ps_coupler_y ps_coupler_z"
+              euler="0 ps_coupler_pitch 0" size="ps_coupler_l ps_coupler_w ps_coupler_h"
+              material="black" contype="0" conaffinity="0" />
+          </body>
+        </body>
+      </body>
+
+    </body>
+  </worldbody>
+
+  <equality>
+    <connect name="crank_coupler_fl" body1="crank_fl" body2="coupler_fl"
+      anchor="crank_anchor_x 0 crank_anchor_z" />
+    <connect name="input_ps_coupler_fl" body1="input_fl" body2="ps_coupler_fl"
+      anchor="input_anchor_x 0 input_anchor_z" />
+
+    <connect name="crank_coupler_fr" body1="crank_fr" body2="coupler_fr"
+      anchor="crank_anchor_x 0 crank_anchor_z" />
+    <connect name="input_ps_coupler_fr" body1="input_fr" body2="ps_coupler_fr"
+      anchor="input_anchor_x 0 input_anchor_z" />
+
+    <connect name="crank_coupler_rl" body1="crank_rl" body2="coupler_rl"
+      anchor="crank_anchor_x 0 crank_anchor_z" />
+    <connect name="input_ps_coupler_rl" body1="input_rl" body2="ps_coupler_rl"
+      anchor="input_anchor_x 0 input_anchor_z" />
+
+    <connect name="crank_coupler_rr" body1="crank_rr" body2="coupler_rr"
+      anchor="crank_anchor_x 0 crank_anchor_z" />
+    <connect name="input_ps_coupler_rr" body1="input_rr" body2="ps_coupler_rr"
+      anchor="input_anchor_x 0 input_anchor_z" />
+  </equality>
+
+  <actuator>
+    <position name="hip_fl" joint="hip_fl" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+    <position name="knee_fl" joint="knee_fl" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+
+    <position name="hip_fr" joint="hip_fr" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+    <position name="knee_fr" joint="knee_fr" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+
+    <position name="hip_rl" joint="hip_rl" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+    <position name="knee_rl" joint="knee_rl" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+
+    <position name="hip_rr" joint="hip_rr" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+    <position name="knee_rr" joint="knee_rr" kp="servo_k" forcelimited="true"
+      forcerange="-servo_tmax servo_tmax" />
+  </actuator>
+
+  <sensor>
+    <velocimeter name="body_velocimeter" site="body" />
+    <gyro name="body_gyro" site="body" />
+    <framepos name="body_framepos" objtype="site" objname="body" reftype="geom" refname="floor" />
+  </sensor>
+</mujoco>
