@@ -108,6 +108,8 @@
             <geom name="coupler_fl" type="box" pos="coupler_x_f 0 coupler_z_f"
               euler="0 coupler_pitch_f 0" size="coupler_l_f coupler_w_f coupler_h_f"
               material="black" />
+            <geom name="foot_fl" type="box" pos="foot_x_f 0 foot_z_f" euler="0 foot_pitch_f 0"
+              size="foot_l_f foot_w_f foot_h_f" material="white" />
           </body>
         </body>
 
@@ -168,6 +170,8 @@
             <geom name="coupler_fr" type="box" pos="coupler_x_f 0 coupler_z_f"
               euler="0 coupler_pitch_f 0" size="coupler_l_f coupler_w_f coupler_h_f"
               material="black" />
+            <geom name="foot_fr" type="box" pos="foot_x_f 0 foot_z_f" euler="0 foot_pitch_f 0"
+              size="foot_l_f foot_w_f foot_h_f" material="white" />
           </body>
         </body>
 
@@ -225,6 +229,8 @@
               pos="coupler_joint_x 0 coupler_joint_z" />
             <geom name="coupler_rl" type="box" pos="coupler_x 0 coupler_z" euler="0 coupler_pitch 0"
               size="coupler_l coupler_w coupler_h" material="black" />
+            <geom name="foot_rl" type="box" pos="foot_x 0 foot_z" euler="0 foot_pitch 0"
+              size="foot_l foot_w foot_h" material="white" />
           </body>
         </body>
 
@@ -282,6 +288,8 @@
               pos="coupler_joint_x 0 coupler_joint_z" />
             <geom name="coupler_rr" type="box" pos="coupler_x 0 coupler_z" euler="0 coupler_pitch 0"
               size="coupler_l coupler_w coupler_h" material="black" />
+            <geom name="foot_rr" type="box" pos="foot_x 0 foot_z" euler="0 foot_pitch 0"
+              size="foot_l foot_w foot_h" material="white" />
           </body>
         </body>
 

@@ -40,6 +40,8 @@ Y_INPUT = 0.001 + W_LINK / 2 + W_INPUT / 2
 
 Y_PS = 0.001 + W_LINK
 
+L_FOOT = 0.01
+
 
 def sim(x, p):
     l_ab, l_bc, l_cd, l_ad, l_be, input_offset, l_ps, l_ss = x
@@ -269,7 +271,7 @@ def mj_params(x, p):
     params['rocker_joint_z'] = lk_rocker[1, 1] - lk_femur[1, 1]
 
     lk_coupler = np.array([leg[6, 1, :], leg[9, 1, :]])
-    l_coupler = helper.link_length(lk_coupler)
+    l_coupler = helper.link_length(lk_coupler) - L_FOOT
     pitch_coupler = helper.link_angle(lk_coupler)
     center_coupler = helper.transform_points(
         pitch_coupler, lk_coupler[0, 0], lk_coupler[0, 1],
@@ -281,6 +283,17 @@ def mj_params(x, p):
     params['coupler_l'] = l_coupler / 2
     params['coupler_w'] = W_LINK / 2
     params['coupler_h'] = H_LINK_TOTAL / 2
+
+    center_foot = helper.transform_points(
+        pitch_coupler, lk_coupler[0, 0], lk_coupler[0, 1],
+        np.array([[l_coupler + L_FOOT / 2, H_LINK_OFFSET]]),
+    )[0]
+    params['foot_x'] = center_foot[0] - lk_femur[1, 0]
+    params['foot_z'] = center_foot[1] - lk_femur[1, 1]
+    params['foot_pitch'] = -pitch_coupler * 180 / np.pi
+    params['foot_l'] = L_FOOT / 2
+    params['foot_w'] = W_LINK / 2
+    params['foot_h'] = H_LINK_TOTAL / 2
 
     params['coupler_joint_x'] = lk_coupler[0, 0] - lk_femur[1, 0]
     params['coupler_joint_z'] = lk_coupler[0, 1] - lk_femur[1, 1]

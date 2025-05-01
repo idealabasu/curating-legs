@@ -411,7 +411,7 @@ class Env(gym.Env):
         self.data = mujoco.MjData(self.model)
         self.floor_id = self.data.geom('floor').id
         self.foot_ids = [
-            self.model.geom(f'coupler_{l}').id
+            self.model.geom(f'foot_{l}').id
             for l in ['fl', 'fr', 'rl', 'rr']
         ]
 

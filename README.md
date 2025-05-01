@@ -20,7 +20,7 @@ This will create a new environment called "curating-legs" and install all the de
 ## Running the Scripts
 Several scripts are runnable to realize various aspects of the project. All commands should be executed in the root folder. 
 
-The data for the leg designs, locomoiton policy, and simulation evalutation results are already included in the data folder. Generating all of them with the code took several days with our workstation computer (AMD Ryzen Threadripper PRO 7975WX, NVIDIA GeForce RTX 4090). 
+The data for the leg designs, locomoiton policies, and simulation evalutation results are already included in the data folder. Generating all of them with the code took several days with our workstation computer (AMD Ryzen Threadripper PRO 7975WX, NVIDIA GeForce RTX 4090). 
 
 ### Leg Deisgn
 Generate a leg with the specificed leg offset (m), leg travel length (m), input range (rad), parallel stiffness (Nm/rad), and series stiffness (Nm/rad). 
@@ -65,7 +65,7 @@ Test the policy with the specified leg combination (0-14), x and z offset (m) of
 python -m fbrl.exp 1 -0.1 0.05 1 -2
 ```
 
-Analyze the performance metrics against theleg combinations.  
+Analyze the performance metrics against the leg combinations.  
 ```
 python -m fbrl.analyze
 ```

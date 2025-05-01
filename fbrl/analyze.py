@@ -212,5 +212,4 @@ if __name__ == '__main__':
             label=['Velocity reward', 'COT'][metric_index]
         )
         name = ['rv', 'cot'][metric_index]
-        plt.savefig(os.path.join('logs', f'eval_{name}.pdf'))
     plt.show()
