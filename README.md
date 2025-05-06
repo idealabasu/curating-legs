@@ -1,5 +1,5 @@
 # Curating Tunable, Compliant Legs for Specialized Tasks
-This project proposes methods for tuning robot legs for specialized tasks. The [project website](https://iicfcii.github.io/curating-legs-web/) has more information. This project has two published papers. 
+This project proposes methods for tuning robot legs for specialized tasks. The [project website](https://idealab.asu.edu/curating-legs-web/) has more information. This project has two published papers. 
 
 - F. Chen and D. M. Aukes, “Curating Tunable, Compliant Legs for Specialized Tasks,” International Journal of Robotics Research (IJRR), Accepted, 2025.
 - F. Chen and D. M. Aukes, “Informed Repurposing of Quadruped Legs for New Tasks,” in 2025 IEEE International Conference on Robotics & Automation (ICRA), Accepted, 2025.
